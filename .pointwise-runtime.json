@@ -2,6 +2,6 @@
   "version": 1,
   "kind": "cli",
   "setup": [],
-  "verify": ["python", "-B", "-m", "unittest", "discover", "-s", "tests", "-v"],
-  "demo": ["python", "-B", "-m", "lake_checks", "demo"]
+  "verify": ["python3", "-B", "-m", "unittest", "discover", "-s", "tests", "-v"],
+  "demo": ["python3", "-B", "-m", "replacement_examples", "demo"]
 }

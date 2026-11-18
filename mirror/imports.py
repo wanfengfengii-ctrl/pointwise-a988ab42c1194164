@@ -1,4 +1,4 @@
-from delivery.manifest import DeliveryManifest, decode_manifest
+from delivery.manifest import DeliveryManifest, ReplacementManifest, decode_manifest
 from lake_codec import require_text
 from mirror.state import MirrorCursor
 
@@ -11,7 +11,7 @@ class BatchOutsideDelivery(LookupError):
     pass
 
 
-def open_delivery(package: str, batch_id: str) -> tuple[DeliveryManifest, int]:
+def open_delivery(package: str, batch_id: str) -> tuple[DeliveryManifest | ReplacementManifest, int]:
     require_text(batch_id, 'batch_id')
     manifest = decode_manifest(package)
     for position, batch in enumerate(manifest.batches, start=1):
@@ -20,7 +20,7 @@ def open_delivery(package: str, batch_id: str) -> tuple[DeliveryManifest, int]:
     raise BatchOutsideDelivery(batch_id)
 
 
-def check_delivery_binding(manifest: DeliveryManifest, cursor: MirrorCursor) -> None:
+def check_delivery_binding(manifest: DeliveryManifest | ReplacementManifest, cursor: MirrorCursor) -> None:
     if (manifest.baseline_id, manifest.baseline_key) != (cursor.baseline_id, cursor.baseline_key):
         raise DeliveryBindingMismatch('delivery baseline does not match the installed mirror baseline')
     if cursor.delivery_id is not None and cursor.delivery_id != manifest.delivery_id:

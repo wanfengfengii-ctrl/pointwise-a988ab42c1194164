@@ -180,16 +180,30 @@ def check_replacement(directory):
                       "reopened_position": resumed.position, "r_mm": 17, "old_U_rejected": True}))
 
 
+def demo(directory):
+    """Run the original offline handoff demo, then the replacement takeover demo."""
+    from lake_checks import demo as switch_demo
+
+    switch_directory = directory / "switch"
+    switch_directory.mkdir()
+    switch_demo(switch_directory)
+    takeover_directory = directory / "takeover"
+    takeover_directory.mkdir()
+    check_replacement(takeover_directory)
+
+
 def main():
     parser = argparse.ArgumentParser(description="澄河观测湖的日批续发样例")
-    parser.add_argument("mode", choices=("baseline", "verify"))
+    parser.add_argument("mode", choices=("baseline", "verify", "demo"))
     args = parser.parse_args()
     with TemporaryDirectory(prefix="chenghe-replacement-") as temporary:
         directory = Path(temporary)
         if args.mode == "baseline":
             check_v1(directory)
-        else:
+        elif args.mode == "verify":
             check_replacement(directory)
+        else:
+            demo(directory)
 
 
 if __name__ == "__main__":

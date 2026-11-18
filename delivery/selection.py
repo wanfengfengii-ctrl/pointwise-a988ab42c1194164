@@ -60,3 +60,23 @@ def select_round(db: Connection, baseline_id: str, batch_ids: Iterable[str]) -> 
     batches = tuple(read_batch(db, batch_id) for batch_id in selected_ids)
     check_round_batches(batches)
     return RoundSelection(baseline_id, baseline, batches)
+
+
+def select_replacement_batches(
+    db: Connection, signed_prefix: tuple[OriginalBatch, ...], batch_ids: Iterable[str]
+) -> tuple[OriginalBatch, ...]:
+    """Select a replacement round, refusing the parent's already signed batch identities."""
+    if isinstance(batch_ids, (str, bytes)):
+        raise InvalidSelection('batch_ids must be a collection of original batch identities')
+    try:
+        selected_ids = tuple(islice(batch_ids, 9))
+    except TypeError as exc:
+        raise InvalidSelection('batch_ids must be iterable') from exc
+    _check_ids(selected_ids)
+    signed_ids = {batch.batch_id for batch in signed_prefix}
+    reused = [batch_id for batch_id in selected_ids if batch_id in signed_ids]
+    if reused:
+        raise InvalidSelection(f'signed parent batches cannot be reused: {reused!r}')
+    batches = tuple(read_batch(db, batch_id) for batch_id in selected_ids)
+    check_round_batches(batches)
+    return batches
