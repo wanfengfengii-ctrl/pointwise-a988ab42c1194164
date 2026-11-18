@@ -1,0 +1,17 @@
+{
+  "baseline_id": "morning",
+  "baseline": {"sources": [["old-X", "X"]], "observations": []},
+  "batches": [
+    {"id": "A", "changes": [
+      {"type": "source", "id": "old-X", "op": "remove"}
+    ]},
+    {"id": "B", "changes": [
+      {"type": "source", "id": "y-origin", "op": "upsert", "code": "Y"},
+      {"type": "observation", "id": "b-reading", "op": "upsert", "code": "X", "value": "0x2c"}
+    ]},
+    {"id": "C", "changes": [
+      {"type": "source", "id": "new-X", "op": "upsert", "code": "X"},
+      {"type": "observation", "id": "c-reading", "op": "upsert", "code": "Y", "value": "0x11"}
+    ]}
+  ]
+}

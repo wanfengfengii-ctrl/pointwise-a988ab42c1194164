@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "kind": "cli",
+  "setup": [],
+  "verify": ["python", "-B", "-m", "unittest", "discover", "-s", "tests", "-v"],
+  "demo": ["python", "-B", "-m", "lake_checks", "demo"]
+}
